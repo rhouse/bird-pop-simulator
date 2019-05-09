@@ -18,23 +18,21 @@ Other files of interest:
 	exampleinputfile.txt    Example parameter file
 	parsim.out              Output from exampleinputfile.txt
 
-To compile on Windows type "c" at the command prompt to run c.bat.
+On Windows, to compile and run parsim, type these at the command prompt:
 
-To compile on Linux type "./c" at the command prompt to run the c script.
-
-To execute the program on the example file under Windows:
-
+    c
 	parsim exampleinputfile.txt >out.txt
+    comp out.txt parsim.txt
 
-This will take a few minutes to execute; be patient.
+The last line above should show that parsim.out and out.txt are identical,
+meaning that the parsim program is doing the right thing.
 
-The files out.txt and parsim.out should compare equal.
+On Linux, type these at the command prompt:
 
-To execute the program on the example file under Linux:
-
+    ./c
 	./parsim exampleinputfile.txt >out.txt
 
-The files out.txt and parsim.out are equivalent, but lines in out.txt are 
-terminated by a single LF character, while the file parsim.out has lines 
-terminated by a CRLF combination.  Various utilities exist on both Windows 
-and Linux to convert back and forth.
+Compare out.txt with parsim.out.  These files should have the same content,
+BUT lines in out.txt are terminated by a single LF character, while the file
+parsim.out has lines terminated by a CRLF combination.  Various utilities
+exist on both Windows and Linux to convert back and forth.
