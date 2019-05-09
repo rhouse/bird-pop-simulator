@@ -19,6 +19,7 @@ Other files of interest:
     parsim.out              Output from exampleinputfile.txt
 
 On Windows, to compile and run parsim, type these at the command prompt:
+(NOTE:  It will take a few minutes for the simulation to run.  Be patient.)
 
     c
     parsim exampleinputfile.txt >out.txt
