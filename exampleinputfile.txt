@@ -1,0 +1,79 @@
+numYearsToSimulate=        25
+
+numYearsToSample=           7
+
+numBirdsPerSample01=      22
+numBirdsPerSample02=      1
+numBirdsPerSample03=      39
+numBirdsPerSample04=      66
+numBirdsPerSample05=      61
+numBirdsPerSample06=      38
+numBirdsPerSample07=      44
+
+initialPopulation=        1000
+minFinalPop=              550
+maxFinalPop=              800
+numExperimentsToReportOn= 500
+maxExperimentsToRun=    10000
+MarriageableAge=            3
+MaxLifeSpanInYears=        20
+
+InitialPopAgeDistributionValues01=  0.15
+InitialPopAgeDistributionValues02=  0.09
+InitialPopAgeDistributionValues03=  0.08
+InitialPopAgeDistributionValues04=  0.08
+InitialPopAgeDistributionValues05=  0.07
+InitialPopAgeDistributionValues06=  0.06
+InitialPopAgeDistributionValues07=  0.06
+InitialPopAgeDistributionValues08=  0.05
+InitialPopAgeDistributionValues09=  0.05
+InitialPopAgeDistributionValues10=  0.04
+InitialPopAgeDistributionValues11=  0.04
+InitialPopAgeDistributionValues12=  0.03
+InitialPopAgeDistributionValues13=  0.03
+InitialPopAgeDistributionValues14=  0.03
+InitialPopAgeDistributionValues15=  0.03
+InitialPopAgeDistributionValues16=  0.03
+InitialPopAgeDistributionValues17=  0.02
+InitialPopAgeDistributionValues18=  0.02
+InitialPopAgeDistributionValues19=  0.02
+InitialPopAgeDistributionValues20=  0.02
+
+maxNumChildrenPerBirth=             1
+
+// If maxNumChildrenPerBirth = 1 then the following three parms are used
+meanForMeanProbOfOneChild=          0.55
+stdDevForMeanProbOfOneChild=        0.00
+stdDevForProbOfOneChild=            0.00
+
+// If maxNumChildrenPerBirth > 1 then the following three parms are used
+meanForMeanForNumChildrenPerBirth=  2.0
+stdDevForMeanForNumChildrenPerBirth=0.5
+stdDevForNumChildrenPerBirth=       0.5
+
+meanForProbOfDyingFirstYear=        0.383
+stdDevForProbOfDyingFirstYear=      0.00
+meanForProbOfDyingAfterFirstYear=   0.12
+stdDevForProbOfDyingAfterFirstYear= 0.00
+
+meanForProbOfImmFirstYear=          0.00
+stdDevForProbOfImmFirstYear=        0.00
+meanForProbOfImmAfterFirstYear=     0.00
+stdDevForProbOfImmAfterFirstYear=   0.00
+
+meanForProbOfEmFirstYear=           0.00
+stdDevForProbOfEmFirstYear=         0.00
+meanForProbOfEmAfterFirstYear=      0.00
+stdDevForProbOfEmAfterFirstYear=    0.00
+
+InitialPopGenderDistributionValuesMale=   0.5
+InitialPopGenderDistributionValuesFemale= 0.5
+NativeBornGenderDistributionValuesMale=   0.5
+NativeBornGenderDistributionValuesFemale= 0.5
+ImmigrationGenderDistributionValuesMale=  0.5
+ImmigrationGenderDistributionValuesFemale=0.5
+ProbabilityOfEmigratingForGenderMale=     1.0
+ProbabilityOfEmigratingForGenderFemale=   1.0
+
+
+// End of sample parameter file
