@@ -1,4 +1,7 @@
-README file for compiling and testing parsim, a bird population simulator.
+          A bird population simulator written in C++ by Roger House
+
+This bird population simulator, parsim, led to an academic paper; for more 
+details click <a href="http://rogerfhouse.com/programming/parsim/index.html">here</a>.
 
 The parsim program consists of the following source files:
 
@@ -35,5 +38,3 @@ The files out.txt and parsim.out are equivalent, but lines in out.txt are
 terminated by a single LF character, while the file parsim.out has lines 
 terminated by a CRLF combination.  Various utilities exist on both Windows 
 and Linux to convert back and forth.
-
-                                  <End>
