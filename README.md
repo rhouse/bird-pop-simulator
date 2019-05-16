@@ -1,3 +1,5 @@
+bird-pop-simulator
+==================
           A bird population simulator written in C++ by Roger House
 
 This bird population simulator, parsim, led to an academic paper; for more 
