@@ -42,16 +42,13 @@
 #include <stdio.h>
 #include <search.h>
 #include <assert.h>
-#include <string.h>
 #include <vector>
 #include <algorithm>
-#include <string>
+#include <cstring>
 
 #include "distrib.h"
 #include "critter.h"
 #include "random.h"
-
-using namespace std;
 
 /*
 	WARNING:  This program evolved (or grew like a weed?) over a 
@@ -294,7 +291,7 @@ double ProbabilityOfEmigratingAtAge[MaxMaxLifeSpanInYears] =
 // not required that the elements sum to 1.0.  How to use the array:
 // Given a gender and age, the probability of emigration =
 // ProbabilityOfEmigratingForGender[g] TIMES ProbabilityOfEmigratingAtAge. Set
-// ProbabilityOfEmigratingForGender eqaul to 1.0 to make the probability of
+// ProbabilityOfEmigratingForGender equal to 1.0 to make the probability of
 // emigration equal to the rows in the above array.
 
 double ProbabilityOfEmigratingForGender[2] =
@@ -347,7 +344,7 @@ int parmLineNum = 0 ;
 
 struct Parm
 {
-	string  name;           // name of the parameter
+    const char *name;       // name of the parameter
 	bool    integerType;    // false means the type is double
 	union	{ int *pInt;  double *pDouble; };  // ptr to parm
 	union	{ int lbInt;  double lbDouble; };  // lower bound
@@ -355,7 +352,7 @@ struct Parm
 
 	// a parm value must fall in the range [lower bound, upper bound]
 
-	Parm (  int lb, int ub, const string &nameX, int *pIntX )
+	Parm (  int lb, int ub, const char *nameX, int *pIntX )
 	{
 		name        = nameX ;
 		integerType = true;
@@ -364,7 +361,7 @@ struct Parm
 		ubInt       = ub;
 	}
 
-	Parm ( double lb, double ub, const string &nameX, double *pDoubleX )
+	Parm ( double lb, double ub, const char *nameX, double *pDoubleX )
 	{
 		name        = nameX ;
 		integerType = false;
@@ -471,8 +468,8 @@ Parm parmTable[] =
   Parm(0.0,   1.0, "NativeBornGenderDistributionValuesFemale=",  &NativeBornGenderDistributionValues [1] ),
   Parm(0.0,   1.0, "ImmigrationGenderDistributionValuesMale=",   &ImmigrationGenderDistributionValues[0] ),
   Parm(0.0,   1.0, "ImmigrationGenderDistributionValuesFemale=", &ImmigrationGenderDistributionValues[1] ),
-  Parm(0.0,   1.0, "ProbabilityOfEmigratingForGenderMale=",      &ProbabilityOfEmigratingForGender   [0] ),
-  Parm(0.0,   1.0, "ProbabilityOfEmigratingForGenderFemale=",    &ProbabilityOfEmigratingForGender   [1] ),
+  Parm(0.0, 100.0, "ProbabilityOfEmigratingForGenderMale=",      &ProbabilityOfEmigratingForGender   [0] ),
+  Parm(0.0, 100.0, "ProbabilityOfEmigratingForGenderFemale=",    &ProbabilityOfEmigratingForGender   [1] ),
 };
 #define PARM_TABLE_SIZE (sizeof(parmTable) / sizeof(parmTable[0]))
 
@@ -495,7 +492,7 @@ void	ComputeRandomTableStuff
 void	ComputeRandomStuff(void);
 void	CountBirdsByAge(int *countByYear);
 Critter	*CreateNativeBornCritter(int momId, int popId);
-void	DumpAllCritters(FILE *fp, const string &tag);
+void	DumpAllCritters(FILE *fp, char *tag);
 void	DisplayUsage(void);
 CritterMap::iterator FindUnmarriedCritter(
 		Gender               genderWanted, 
@@ -505,7 +502,7 @@ Critter	*GetCritter(int critterId);
 bool	getLine(void);
 void	GetRidOfAllCritters(void);
 Critter	*GetSampleCritter(int critterId);
-string	LoadParmFile(void);
+const char	*LoadParmFile(void);
 void	MakeEachCritterOneYearOlder(void);
 void	MarryOffSingleCritters(void);
 Critter	*MustGetCritter(int critterId);
@@ -517,7 +514,7 @@ void	RemoveCrittersWhichEmigrate(void);
 void	RemoveReallyOldCritters(void);
 void	SetUpInitialPopulation(void);
 void	SimulateBirdPopulation(void);
-bool	VerifyCritters(FILE *fp, const string &tag);
+bool	VerifyCritters(FILE *fp, const char *tag);
 
 
 int main(int argc, char **argv)
@@ -612,7 +609,7 @@ void SimulateBirdPopulation(void)
 	if (traceOutput)
 	{
 		printf("Experiment %3d:  Number of birds at time 0:  %d\n", 
-				experimentNumber, (int)TheCritterMap.size());
+				experimentNumber, (int) TheCritterMap.size());
 		printf("\n");
 		if (postBreeding)
 			printf("  year    die    emi    imm    wed   born"
@@ -663,13 +660,13 @@ void SimulateBirdPopulation(void)
 				"   %4d", curYear, numDiedThisYear, 
 				numEmigratedThisYear, numImmigratedThisYear,
 				numMarriedThisYear, numBornThisYear, 
-				(int)TheCritterMap.size());
+				(int) TheCritterMap.size());
 			else
 				printf("  %4d:  %4d   %4d   %4d   %4d   %4d"
 				"   %4d", curYear, numBornThisYear, 
 				numDiedThisYear, numEmigratedThisYear, 
 				numImmigratedThisYear, numMarriedThisYear, 
-				(int)TheCritterMap.size());
+				(int) TheCritterMap.size());
 
 			printf("               ");
 			for (int k = 0;  k < numSlotsInDiedArray;  ++k)
@@ -909,6 +906,8 @@ void RemoveCrittersWhichEmigrate()
 		double probabilityOfEmigrating = 
 			ProbabilityOfEmigratingAtAge[pCritter->age] *
 			ProbabilityOfEmigratingForGender[pCritter->gender-1];
+		if ( probabilityOfEmigrating < 0 ) probabilityOfEmigrating = 0;
+		if ( probabilityOfEmigrating > 1 ) probabilityOfEmigrating = 1;
 
 		if (Distribution::RandomNumberFromUnitInterval() 
 				<= probabilityOfEmigrating)
@@ -1073,12 +1072,9 @@ void AddCrittersWhichAreBorn(void)
 
 		if (maxNumChildrenPerBirth == 1)
 		{
-// 2006 Aug 17  RFH:  We no longer use the probOfOneChild member of Critter
-//			double probOfOneChild = 
-//				(pMom->probOfOneChild + 
-//					pPop->probOfOneChild) / 2 ;
-
-			double probOfOneChild = meanForProbOfOneChild ;
+			double probOfOneChild = 
+				(pMom->probOfOneChild + 
+					pPop->probOfOneChild) / 2 ;
 
 			if (Distribution::RandomNumberFromUnitInterval() <= 
 								probOfOneChild)
@@ -1339,8 +1335,8 @@ void AnalyzeFinalPopulation(void)
 		printf("\n");
 	printf("Experiment %3d:  Final population %3d:  Sample of %3d birds "
 		"contains %3d parents (%5.1f%%) and %3d sibling pairs\n", 
-		experimentNumber, (int)TheCritterMap.size(), 
-                (int)SampleMap.size(), numParents, percent, numSiblingPairs);
+		experimentNumber, (int) TheCritterMap.size(), (int) SampleMap.size(), 
+		numParents, percent, numSiblingPairs);
 	if (traceOutput)
 		printf("\n");
 
@@ -1449,7 +1445,7 @@ Gender RandomGender(Distribution &distribution)
 }
 
 
-bool VerifyCritters(FILE *fp, const string &tag)
+bool VerifyCritters(FILE *fp, const char *tag)
 /*
 	At present only ages are verified.
 */
@@ -1472,8 +1468,8 @@ bool VerifyCritters(FILE *fp, const string &tag)
 
 		if (!tagOutput)
 		{
-			if (!tag.empty())
-				fprintf(fp, "\n%s:\n", tag.c_str());
+			if (tag != NULL && *tag != 0)
+				fprintf(fp, "\n%s:\n", tag);
 			tagOutput = true;
 		}
 
@@ -1486,13 +1482,13 @@ bool VerifyCritters(FILE *fp, const string &tag)
 }   // end VerifyCritters
 
 
-void DumpAllCritters(FILE *fp, const string &tag)
+void DumpAllCritters(FILE *fp, char *tag)
 {
 	Critter              *pCritter;
 	CritterMap::iterator critItr;
 
-	if (!tag.empty())
-		fprintf(fp, "%s:\n", tag.c_str());
+	if (tag != NULL && *tag != 0)
+		fprintf(fp, "%s:\n", tag);
 
 	// Iterate over the map and delete all critters in the map:
 
@@ -1597,7 +1593,7 @@ double genNormalRandomProbability ( double mean, double stddev )
 
 void ParseCommandLine(int argc, char **argv)
 {
-	string errorMess;
+	const char *errorMess;
 
 	if ( argc != 2 )
 	{
@@ -1620,20 +1616,20 @@ void ParseCommandLine(int argc, char **argv)
 
 	fclose(parmfp);
 
-	if (!errorMess.empty())
+	if (errorMess != NULL)
 	{
 		if (parmLineNum > 0 ) 
 			fprintf(stderr, "\n***ERROR in parm file at line %d:  %s\n", 
-						parmLineNum, errorMess.c_str());
+						parmLineNum, errorMess);
 		else
-			fprintf(stderr, "\n***ERROR in parm file:  %s\n", errorMess.c_str());
+			fprintf(stderr, "\n***ERROR in parm file:  %s\n", errorMess);
 		exit(1);
 	}
 
 } // end ParseCommandLine
 
 
-string LoadParmFile(void)
+const char *LoadParmFile(void)
 {
 	Parm   *p;
 	size_t  len;
@@ -1641,23 +1637,23 @@ string LoadParmFile(void)
 	char   *endptr;
 	int	intVal;
 	double	doubleVal;
-	const char *initPopStr   = "InitialPopAgeDistributionValues";
+	const char   *initPopStr   = "InitialPopAgeDistributionValues";
 	int     initPopLen   = strlen(initPopStr);
 	int     initPopCount = 0;
-	const char *numBirdsPopStr   = "numBirdsPerSample";
+	const char   *numBirdsPopStr   = "numBirdsPerSample";
 	int     numBirdsPopLen   = strlen(numBirdsPopStr);
 	int     numBirdsPopCount = 0;
 
-	for ( size_t i = 0 ;  i <  PARM_TABLE_SIZE;  ++i )
+	for ( int i = 0 ;  i < PARM_TABLE_SIZE ;  ++i )
 	{
 		p = &parmTable[i];
 
 		if ( !getLine() )
 			return "Too few parameters";
 
-		len = p->name.size();
+		len = strlen(p->name);
 
-		if ( strncmp (parmLine, p->name.c_str(), len ) != 0 )
+		if ( strncmp (parmLine, p->name, len ) != 0 )
 			return "Not a parm or parms not in correct order";
 
 		s = parmLine + len ;
@@ -1668,7 +1664,7 @@ string LoadParmFile(void)
 			if (s == endptr)
 				return "Invalid integer value";
 
-			if (strcmp(p->name.c_str(), "MaxLifeSpanInYears=") == 0)
+			if (strcmp(p->name, "MaxLifeSpanInYears=") == 0)
 			{
 				if (intVal < MinMaxLifeSpanInYears)
 					return "MaxLifeSpanInYears parameter too small";
@@ -1682,14 +1678,14 @@ string LoadParmFile(void)
 				if (intVal > p->ubInt)
 					return "Integer parameter too large";
 
-				if (strcmp(p->name.c_str(), "numYearsToSample=") == 0)
+				if (strcmp(p->name, "numYearsToSample=") == 0)
 				{
 					if (intVal > numYearsToSimulate)
 						return "numYearsToSample parameter greater than numYearsToSimulate";
 				}
 			}
 
-			if (strncmp(p->name.c_str(), numBirdsPopStr, numBirdsPopLen) == 0)
+			if (strncmp(p->name, numBirdsPopStr, numBirdsPopLen) == 0)
 			{
 				// Make sure numYearsToSample already
 				// appeared in parmTable:
@@ -1714,7 +1710,7 @@ string LoadParmFile(void)
 			if (doubleVal > p->ubDouble)
 				return "Double parameter too large";
 
-			if (strncmp(p->name.c_str(), initPopStr, initPopLen) == 0)
+			if (strncmp(p->name, initPopStr, initPopLen) == 0)
 			{
 				// Make sure MaxLifeSpanInYears already
 				// appeared in parmTable:
@@ -1741,7 +1737,7 @@ string LoadParmFile(void)
 	if (MarriageableAge > MaxLifeSpanInYears)
 		return "MarriageableAge parameter too large";
 
-	return "";
+	return NULL;
 
 }   //  end LoadParmFile
 
